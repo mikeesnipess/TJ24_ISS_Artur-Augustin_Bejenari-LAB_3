@@ -1,7 +1,9 @@
 package com.example.lab3;
 
+import java.util.UUID;
+
 public class Product {
-    private Long id;
+    private UUID id;
     private String name;
     private String description;
     private int price;
@@ -9,18 +11,18 @@ public class Product {
     public Product() {
     }
 
-    public Product(Long id, String name, String description, int price) {
+    public Product(UUID id, String name, String description, int price) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

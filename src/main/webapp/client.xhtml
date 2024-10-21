@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Clients</title>
+</h:head>
+<h:body>
+
+    <!-- Client Table -->
+    <h:form id="clientListForm">
+        <h3>Client List</h3>
+
+        <p:dataTable value="#{clientBean.clients}" var="client">
+            <p:column headerText="ID">
+                <h:outputText value="#{client.id}" />
+            </p:column>
+            <p:column headerText="#{msg.Name}">
+                <h:outputText value="#{client.name}" />
+            </p:column>
+            <p:column headerText="#{msg.Email}">
+                <h:outputText value="#{client.email}" />
+            </p:column>
+            <p:column headerText="#{msg.Phone}">
+                <h:outputText value="#{client.phone}" />
+            </p:column>
+            <p:column headerText="#{msg.Address}">
+                <h:outputText value="#{client.address}" />
+            </p:column>
+            <p:column headerText="#{msg.Actions}">
+                <p:commandButton id="btnUpdateClient" value="Update"
+                                 action="#{clientBean.updateClient(client)}"
+                                 oncomplete="PF('dlgUpdate').show(); PF('msgs').clear();"
+                                 process="@this"
+                                 update=":clientForm"
+                />
+                <p:commandButton id="btnDeleteClient" value="Delete"
+                                 action="#{clientBean.deleteClient(client)}"
+                                 oncomplete="PF('msgs').show();"
+                                 icon="pi pi-trash"
+                                 ajax="true"
+                                 process="@this"
+                                 update=":clientListForm"
+                                 onclick="return confirm('Are you sure you want to delete this client?');"
+                />
+            </p:column>
+        </p:dataTable>
+    </h:form>
+
+    <h:form id="clientForm">
+        <div class="card">
+            <!-- Growl to display messages -->
+            <p:growl id="msgs" showDetail="true" />
+
+            <!-- Button to Open the Dialog -->
+            <p:commandButton value="Add New Client" icon="pi pi-plus" onclick="PF('dlg3').show()" type="button" />
+
+            <p:dialog header="Add New Client" widgetVar="dlg3" minHeight="40" width="350" showEffect="fade" focus="btnYes" closeOnEscape="true">
+                <h3>Add New Client</h3>
+
+                <!-- Name -->
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <p:outputLabel for="name" value="#{msg.Name}" />
+                        <p:inputText id="name" value="#{clientBean.newClient.name}" required="true" label="Name" />
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <p:outputLabel for="email" value="Email:" />
+                        <p:inputText id="email" value="#{clientBean.newClient.email}" required="true" label="Email" />
+                    </div>
+                </div>
+
+                <!-- Phone -->
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <p:outputLabel for="phone" value="Phone:" />
+                        <p:inputText id="phone" value="#{clientBean.newClient.phone}" required="true" label="Phone" />
+                    </div>
+                </div>
+
+                <!-- Address -->
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <p:outputLabel for="address" value="Address:" />
+                        <p:inputText id="address" value="#{clientBean.newClient.address}" required="true" label="Address" />
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <p:commandButton id="btnYes" value="Add" action="#{clientBean.addClient}"
+                                         update=":clientListForm :clientForm:msgs"
+                        oncomplete="PF('dlg3').hide()" />
+                        <p:commandButton value="Cancel" onclick="PF('dlg3').hide()" type="button" />
+                    </div>
+                </div>
+            </p:dialog>
+        </div>
+    </h:form>
+
+    <h:form>
+        <h:commandButton value="Go to Product" action="#{navigationBean.goToProduct}"/>
+    </h:form>
+
+    <h:form>
+        <h:selectOneMenu value="#{localeSwitcherBean.language}">
+            <f:selectItem itemValue="en" itemLabel="English" />
+            <f:selectItem itemValue="ro" itemLabel="Romanian" />
+            <f:ajax listener="#{localeSwitcherBean.setLanguage}" render="@form"/>
+        </h:selectOneMenu>
+    </h:form>
+
+
+</h:body>
+</html>

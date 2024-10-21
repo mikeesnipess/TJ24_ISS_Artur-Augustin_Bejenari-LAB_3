@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Named
 @RequestScoped
@@ -29,7 +30,7 @@ public class ProductBean {
 
             while (rs.next()) {
                 Product product = new Product(
-                        rs.getLong("id"),
+                        (UUID) rs.getObject("id"),
                         rs.getString("name"),
                         rs.getString("description"),
                         rs.getInt("price")

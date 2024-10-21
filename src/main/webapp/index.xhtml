@@ -7,24 +7,40 @@
     <title>Product List</title>
 </h:head>
 <h:body>
+    <f:event type="preRenderView" listener="#{localeSwitcherBean.updateLocale}" />
     <h1>Product List</h1>
     <h:form>
         <p:dataTable value="#{productBean.products}" var="product">
             <p:column headerText="ID">
                 <h:outputText value="#{product.id}" />
             </p:column>
-            <p:column headerText="Name">
+            <p:column headerText="#{msg.Name}">
                 <h:outputText value="#{product.name}" />
             </p:column>
-            <p:column headerText="Description">
+            <p:column headerText="#{msg.Description}">
                 <h:outputText value="#{product.description}" />
             </p:column>
-            <p:column headerText="Price">
+            <p:column headerText="#{msg.Price}">
                 <h:outputText value="#{product.price}">
                     <f:convertNumber type="currency" currencySymbol="$" />
                 </h:outputText>
             </p:column>
         </p:dataTable>
     </h:form>
+
+    <h:form>
+        <h:commandButton value="Go to Client" action="#{navigationBean.goToClient}" />
+    </h:form>
+
+
+    <h:form>
+        <h:selectOneMenu value="#{localeSwitcherBean.language}">
+            <f:selectItem itemValue="en" itemLabel="English" />
+            <f:selectItem itemValue="ro" itemLabel="Romanian" />
+            <f:ajax listener="#{localeSwitcherBean.setLanguage}" render="@form"/>
+        </h:selectOneMenu>
+    </h:form>
+
+
 </h:body>
 </html>
