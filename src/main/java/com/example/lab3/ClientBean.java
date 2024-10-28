@@ -18,22 +18,20 @@ import java.util.UUID;
 @RequestScoped
 public class ClientBean {
     private List<Client> clients;
-    private Client newClient = new Client(); // To capture form inputs for new or edited clients
+    private Client selectedClient;
+    private Client newClient = new Client();
 
     @PostConstruct
     public void init() {
         try {
-            clients = loadClients(); // Ensure this method works correctly
+            clients = loadClients();
         } catch (Exception e) {
-            // Log the exception, e.g., using Logger
             System.err.println("Error during initialization: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-    // Method to load clients from the database
     private List<Client> loadClients() {
-        // Initialize the clients list
         List<Client> clients = new ArrayList<>();
         String sql = "SELECT * FROM clients";
 
@@ -55,10 +53,8 @@ public class ClientBean {
             e.printStackTrace();
         }
 
-        // Return the list of clients (will be empty if an error occurred)
         return clients;
     }
-
 
     public void addClient() {
         System.out.println("New Client: " + newClient);
@@ -76,13 +72,10 @@ public class ClientBean {
             pstmt.setString(5, newClient.getAddress());
             pstmt.executeUpdate();
 
-            // Clear the newClient object for future input
             newClient = new Client();
 
-            // Reload the clients list
             loadClients();
 
-            // Display success message
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Client added successfully"));
         } catch (SQLException e) {
@@ -92,30 +85,40 @@ public class ClientBean {
         }
     }
 
-
-
-    // Method to update an existing client in the database
     public void updateClient(Client client) {
+        this.selectedClient = client;
+        System.out.println("Selected client for update: " + selectedClient.getName());
+    }
+
+    public void saveUpdatedClient(Client selClient) {
+        System.out.println("Updating client: " + selClient.getName()); // Debugging statement
+
         String sql = "UPDATE clients SET name = ?, email = ?, phone = ?, address = ? WHERE id = ?";
 
         try (Connection conn = DataBaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setString(1, client.getName());
-            pstmt.setString(2, client.getEmail());
-            pstmt.setString(3, client.getPhone());
-            pstmt.setString(4, client.getAddress());
-            pstmt.setObject(5, client.getId());
-            pstmt.executeUpdate();
+            pstmt.setString(1, selectedClient.getName());
+            pstmt.setString(2, selectedClient.getEmail());
+            pstmt.setString(3, selectedClient.getPhone());
+            pstmt.setString(4, selectedClient.getAddress());
+            pstmt.setObject(5, selectedClient.getId());
 
-            // Reload clients after update
-            loadClients();
+            int affectedRows = pstmt.executeUpdate(); // Check how many rows were updated
+            System.out.println("Rows affected: " + affectedRows); // Debugging statement
+
+            clients = loadClients(); // Reload clients after update
+
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Client updated successfully"));
         } catch (SQLException e) {
             e.printStackTrace();
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Could not update client"));
         }
     }
 
-    // Method to delete a client from the database
+
     public void deleteClient(Client client) {
         String sql = "DELETE FROM clients WHERE id = ?";
 
@@ -125,14 +128,12 @@ public class ClientBean {
             pstmt.setObject(1, client.getId());
             pstmt.executeUpdate();
 
-            // Reload clients after deletion
             loadClients();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    // Getters for the client list and the new client instance
     public List<Client> getClients() {
         return clients;
     }
@@ -144,4 +145,13 @@ public class ClientBean {
     public void setNewClient(Client newClient) {
         this.newClient = newClient;
     }
+
+    public Client getSelectedClient() {
+        return selectedClient;
+    }
+
+    public void setSelectedClient(Client selectedClient) {
+        this.selectedClient = selectedClient;
+    }
+
 }

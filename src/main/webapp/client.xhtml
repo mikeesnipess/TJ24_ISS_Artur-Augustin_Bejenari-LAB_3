@@ -10,7 +10,7 @@
 
     <!-- Client Table -->
     <h:form id="clientListForm">
-        <h3>Client List</h3>
+        <h3>#{msg['clientList']}</h3>
 
         <p:dataTable value="#{clientBean.clients}" var="client">
             <p:column headerText="ID">
@@ -30,11 +30,10 @@
             </p:column>
             <p:column headerText="#{msg.Actions}">
                 <p:commandButton id="btnUpdateClient" value="Update"
-                                 action="#{clientBean.updateClient(client)}"
-                                 oncomplete="PF('dlgUpdate').show(); PF('msgs').clear();"
-                                 process="@this"
-                                 update=":clientForm"
-                />
+                                 actionListener="#{clientBean.updateClient(client)}"
+                                 update=":clientFormUpdate"
+                                 oncomplete="PF('dlgUpdate').show()" />
+
                 <p:commandButton id="btnDeleteClient" value="Delete"
                                  action="#{clientBean.deleteClient(client)}"
                                  oncomplete="PF('msgs').show();"
@@ -96,7 +95,7 @@
                     <div class="ui-grid-col-4">
                         <p:commandButton id="btnYes" value="Add" action="#{clientBean.addClient}"
                                          update=":clientListForm :clientForm:msgs"
-                        oncomplete="PF('dlg3').hide()" />
+                                         oncomplete="PF('dlg3').hide()" />
                         <p:commandButton value="Cancel" onclick="PF('dlg3').hide()" type="button" />
                     </div>
                 </div>
@@ -104,8 +103,33 @@
         </div>
     </h:form>
 
+    <!-- Update dialog -->
+    <p:dialog header="Update Client" widgetVar="dlgUpdate" minHeight="40" width="350" closeOnEscape="true">
+        <h:form id="clientFormUpdate">
+            <p:growl id="msgsUpdate" showDetail="true" />
+            <p:outputLabel for="nameUpdate" value="Name" />
+            <p:inputText id="nameUpdate" value="#{clientBean.selectedClient.name}" required="true" />
+
+            <p:outputLabel for="emailUpdate" value="Email" />
+            <p:inputText id="emailUpdate" value="#{clientBean.selectedClient.email}" required="true" />
+
+            <p:outputLabel for="phoneUpdate" value="Phone" />
+            <p:inputText id="phoneUpdate" value="#{clientBean.selectedClient.phone}" required="true" />
+
+            <p:outputLabel for="addressUpdate" value="Address" />
+            <p:inputText id="addressUpdate" value="#{clientBean.selectedClient.address}" required="true" />
+
+            <p:commandButton id="btnSaveClient" value="Save"
+                             action="#{clientBean.saveUpdatedClient(clientBean.selectedClient)}"
+                             update=":clientListForm :clientFormUpdate:msgsUpdate"
+                             oncomplete="PF('dlgUpdate').hide()" />
+
+            <p:commandButton value="Cancel" onclick="PF('dlgUpdate').hide()" type="button" />
+        </h:form>
+    </p:dialog>
+
     <h:form>
-        <h:commandButton value="Go to Product" action="#{navigationBean.goToProduct}"/>
+        <h:commandButton value="#{msg.goToProduct}" action="#{navigationBean.goToProduct}"/>
     </h:form>
 
     <h:form>

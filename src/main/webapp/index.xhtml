@@ -4,11 +4,12 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
 <h:head>
-    <title>Product List</title>
+    <title><h:outputText value="#{msg['productList']}"/></title>
 </h:head>
+
 <h:body>
     <f:event type="preRenderView" listener="#{localeSwitcherBean.updateLocale}" />
-    <h1>Product List</h1>
+    <h1><h:outputText value="#{msg['productList']}"/></h1>
     <h:form>
         <p:dataTable value="#{productBean.products}" var="product">
             <p:column headerText="ID">
@@ -29,7 +30,7 @@
     </h:form>
 
     <h:form>
-        <h:commandButton value="Go to Client" action="#{navigationBean.goToClient}" />
+        <h:commandButton value="#{msg.goToClient}" action="#{navigationBean.goToClient}" />
     </h:form>
 
 
